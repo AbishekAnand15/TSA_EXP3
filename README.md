@@ -1,43 +1,73 @@
+## Name: Abishek Xavier A
+## Reg No: 212222230004
+## Date: 
+
 # Ex.No: 03   COMPUTE THE AUTO FUNCTION(ACF)
-Date: 
 
 ### AIM:
 To Compute the AutoCorrelation Function (ACF) of the data for the first 35 lags to determine the model
 type to fit the data.
+
 ### ALGORITHM:
 1. Import the necessary packages
 2. Find the mean, variance and then implement normalization for the data.
 3. Implement the correlation using necessary logic and obtain the results
 4. Store the results in an array
 5. Represent the result in graphical representation as given below.
+
+
 ### PROGRAM:
+```
+import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
-import numpy as np
+# Load the furniture store sales data (replace with your actual file and encoding if necessary)
+file_path = '/content/Super_Store_data.csv'  # Path to the sales dataset
+data = pd.read_csv(file_path, encoding='ISO-8859-1')  # Adjust encoding if necessary
 
-data = [3, 16, 156, 47, 246, 176, 233, 140, 130,
-101, 166, 201, 200, 116, 118, 247,
-209, 52, 153, 232, 128, 27, 192, 168, 208,
-187, 228, 86, 30, 151, 18, 254,
-76, 112, 67, 244, 179, 150, 89, 49, 83, 147, 90,
-33, 6, 158, 80, 35, 186, 127]
+# Print columns to identify the correct column for sales
+print(data.columns)
 
-lags = range(35)
+# Extract the sales column (Replace '<correct_column_name>' with the actual column name for sales)
+time_series = data['Sales']  # Use the correct column name for sales
 
+# Ensure the sales data is numeric (in case of formatting issues)
+time_series = pd.to_numeric(time_series, errors='coerce').dropna()
 
-#Pre-allocate autocorrelation table
+# Calculate the number of data points and lags
+n_data_points = len(time_series)
+n_lags = min(35, n_data_points - 1)
+acf_values = np.zeros(n_lags)
 
-#Mean
+# Calculate the mean and variance of the sales data
+mean = np.mean(time_series)
+variance = np.var(time_series)
+normalized_data = time_series - mean  # Remove the mean (center the data)
 
-#Variance
+# Compute the ACF
+for lag in range(n_lags):
+    lagged_data = np.roll(normalized_data, -lag)
+    acf_values[lag] = np.sum(normalized_data[:n_data_points-lag] * lagged_data[:n_data_points-lag]) / (variance * (n_data_points - lag))
 
-#Normalized data
+# Plot the ACF results
+plt.figure(figsize=(10, 6))
+plt.stem(range(n_lags), acf_values, use_line_collection=True)
+plt.title('ACF Plot for Furniture Store Sales')
+plt.xlabel('Lag')
+plt.ylabel('ACF')
+plt.grid(True)
+plt.show()
 
-#Go through lag components one-by-one
-
-#display the graph
+# Print the calculated mean and variance
+print("Mean = ", mean)
+print("Variance = ", variance)
+```
 
 ### OUTPUT:
+![Screenshot 2024-09-20 183757](https://github.com/user-attachments/assets/149091c3-a70f-4f27-8856-899efb8de975)
+
+
 
 ### RESULT:
-        Thus we have successfully implemented the auto correlation function in python.
+    Thus, the auto correlation function in python is successfully implemented.
